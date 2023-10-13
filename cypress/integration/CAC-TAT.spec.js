@@ -1,4 +1,3 @@
-
 // CAC-TAT.spec.js created with Cypress
 //
 // Start writing your Cypress tests below!
@@ -41,7 +40,7 @@ describe("Central de Atendimento ao Cliente TAT", function () {
     cy.get("#firstName").type("Pierre");
     cy.get("#lastName").type("Souza");
     cy.get("#email").type("Pierre@exemplo.com");
-    cy.get("#phone-checkbox").click();
+    cy.get("#phone-checkbox").check().should("be.checked");
     cy.get("#open-text-area").type("teste", { delay: 0 });
     cy.contains(".button","Enviar").click();
 
@@ -79,5 +78,28 @@ describe("Central de Atendimento ao Cliente TAT", function () {
     cy.get(".success").should("be.visible");
   })
 
-  it
+  it("Seleciona um produto(Youtube) por seu texto", function () {
+    cy.get('#product').select('youtube').should("have.value","youtube")
+  })
+  it("Seleciona um produto(Mentoria) por seu texto", function () {
+    cy.get('#product').select('mentoria').should("have.value","mentoria")
+  })
+  it("Seleciona um produto(Blog) por seu texto", function () {
+    cy.get('#product').select(1).should("have.value","blog")
+  })
+
+  it("marca cada tipo de atendimento", function () {
+    cy.get('input[type=radio][value=ajuda]').check().should("be.checked")
+    cy.get('input[type=radio][value=elogio]').check().should("be.checked")
+    cy.get('input[type=radio][value=feedback]').check().should("be.checked")
+  })
+
+  it('marca o tipo de atendimento "Feedback"', function () {
+    cy.get('input[type="radio"][value=feedback]').check().should('be.checked')
+  })
+
+  it("marca ambos checkboxes, depois desmarca o último", function () {
+    cy.get('input[type="checkbox"]').check().should('be.checked').last().uncheck().should("not.be.checked")
+    
+  })
 });
