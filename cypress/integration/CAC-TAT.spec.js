@@ -1,4 +1,5 @@
 describe("Central de Atendimento ao Cliente TAT", function () {
+  const THREE_SECONDS_IN_MS = 3000;
   beforeEach(function () {
     cy.visit("./src/index.html");
   });
@@ -8,6 +9,8 @@ describe("Central de Atendimento ao Cliente TAT", function () {
   it("preenche os campos obrigatórios e envia o formulário", function () {
     const longText =
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi impedit at possimus distinctio ad veniam aspernatur, consectetur modi officia consequuntur? Aliquid laborum a maiores dolorum porro fugit voluptatibus architecto esse?";
+
+    cy.clock();
     cy.get("#firstName").type("Pierre");
     cy.get("#lastName").type("Souza");
     cy.get("#email").type("Pierre@exemplo.com");
@@ -15,19 +18,31 @@ describe("Central de Atendimento ao Cliente TAT", function () {
     cy.contains(".button", "Enviar").click();
 
     cy.get(".success").should("be.visible");
+
+    cy.tick(THREE_SECONDS_IN_MS);
+
+    cy.get(".success").should("not.be.visible");
   });
   it("exibe mensagem de erro ao submeter o formulário com um email com formatação inválida", function () {
+    cy.clock();
+
     cy.get("#firstName").type("Pierre");
     cy.get("#lastName").type("Souza");
     cy.get("#email").type("Pierre,exemplo.com");
     cy.get("#open-text-area").type("teste", { delay: 0 });
     cy.contains(".button", "Enviar").click();
+
     cy.get(".error").should("be.visible");
+
+    cy.tick(THREE_SECONDS_IN_MS);
+
+    cy.get(".error").should("not.be.visible");
   });
   it("Campo de telefone continua vazio quando preenchido com valor não-númerico", function () {
     cy.get("#phone").type("abcdefghj").should("have.value", "");
   });
   it("exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário", function () {
+    cy.clock();
     cy.get("#firstName").type("Pierre");
     cy.get("#lastName").type("Souza");
     cy.get("#email").type("Pierre@exemplo.com");
@@ -36,6 +51,9 @@ describe("Central de Atendimento ao Cliente TAT", function () {
     cy.contains(".button", "Enviar").click();
 
     cy.get(".error").should("be.visible");
+
+    cy.tick(THREE_SECONDS_IN_MS);
+    cy.get(".error").should("not.be.visible");
   });
   it("preenche e limpa os campos nome, sobrenome, email e telefone", function () {
     cy.get("#firstName")
@@ -60,8 +78,13 @@ describe("Central de Atendimento ao Cliente TAT", function () {
       .should("have.value", "");
   });
   it("exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatório", function () {
+    cy.clock();
     cy.contains(".button", "Enviar").click();
     cy.get(".error").should("be.visible");
+
+    cy.tick(THREE_SECONDS_IN_MS);
+
+    cy.get(".error").should("not.be.visible");
   });
   it("Envia o formulário com sucesso usando um comando customizado", function () {
     cy.fillMandatoryFieldsAndSubmit();
